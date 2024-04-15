@@ -8,6 +8,7 @@ from pygame.sprite import Group
 from alien import Aliens
 from game_stats import GameStats
 from button import Button
+from scoreboard import  ScoreBoard
 
 
 def run_game():
@@ -34,11 +35,12 @@ def run_game():
 
     # 创建一个游戏统计信息的实例
     stats = GameStats(instance_settings)
+    score =ScoreBoard(screen, instance_settings, stats)
 
 
     while True:
         # 获取在游戏过程中的操作
-        gf.check_event(screen, instance_settings, instance_ship, bullets)
+        gf.check_event(screen, instance_settings, instance_ship, bullets,button_play,stats,aliens)
 
         if stats.game_active :
             # 更新飞船的连续移动
@@ -52,7 +54,7 @@ def run_game():
 
 
         # 更新屏幕绘制内容
-        gf.update_screen(screen, instance_settings, instance_ship, bullets, aliens,stats,button_play)
+        gf.update_screen(screen, instance_settings, instance_ship, bullets, aliens,stats,button_play,score)
 
 
 run_game()

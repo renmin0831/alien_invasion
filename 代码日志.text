@@ -238,34 +238,37 @@
         定时回顾方法和思路
 
 
-
-
-
----------------------------------------------------------------------------------
 14创建button类，添加play按钮
+    将play按钮切换到非活动状态，点击后再次点击相同区域,像不像测试中的测试点呀
+
     想一想button类应该包含什么属性
     pygame中没有内置的创建按钮的方法， 创建带标签的实心矩形
     pygame.font.SysFont()s 是什么方法
     初始化的时候为什么没有setting
     self.font.render(msg, True, self.button_color, self.text_color)
 
-    创建好button类后运行，屏幕中间没有出现play按钮；因为self.game_active = True
+    解决Bug：创建好button类后运行，屏幕中间没有出现play按钮；
+        因为self.game_active = True
+
+    解决Bug：外星人和子弹更新卸载了gf_update()中，while循环中也有，导致外星人不受活动状态影响
+        多写了子弹和外星人更新在screen——update中
+
+    解决Bug:飞船在重新开始后没有返回指定位置哎
+
 添加check_play_button
     pygame.mouse.get_pos()
 处理游戏结束时的点击play按钮
-    有些方法需要在不同的文件中重新调用哎。。。
-    有个bug 飞船在重新开始后没有返回指定位置哎，，那为啥不报错，
-
-将play按钮切换到非活动状态
-    点击后再次点击相同区域,像不像测试中的测试点呀
-
-隐藏光标   pygame.mouse.set_visible(False)
-显示光标
-
-设置速度等级并重置速度
+解决：为什么有些方法需要在不同的文件中重新调用哎。。。
 
 
-解决：不知道都应该都干些什么
+
+
+解决：什么时候需要隐藏光标，什么时候需要显示光标 pygame.mouse.set_visible(False)
+    当活动处于false且玩家点击了play按钮时需要隐藏光标；这点有点绕
+    当活动处于false状态时，要显示光标
+
+
+
 解决 ：如何创建一个带标签的实心矩形
 
 
@@ -281,15 +284,16 @@
         如何将文字渲染成图像
         forn.randon()
 
-
+解决：如下
 screen.fill(self.button_bg_color, self.rect)和 screen.blit(self.msg_image, self.msg_image_rect) 分不清楚参数应该是什么
 
+解决：如何让玩家点击play按钮后就开始游戏
 
 
-
-
-
-
+解决：设置速度等级，提升速度、重置速度
+    基本思路和 stats类的写法一样
+    速度在判断子弹和飞船碰撞检测时，提升游戏难度
+    外星人、飞船等信息需要重置的时候 速度一起重置
 
 
 25 记分
