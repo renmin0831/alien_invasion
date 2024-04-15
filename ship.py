@@ -29,6 +29,10 @@ class Ship:
         self.keep_moving_up = False
         self.keep_moving_down = False
 
+    def center_ship(self):
+        # 信息重置时 将飞船重置在屏幕中间;属性时对的 为什么没有生效呢
+        self.center = self.screen_rect.centerx
+
     def update_ship(self):
         # 条件测试：右侧移动标志True且 右侧的边缘小于屏幕右侧边缘
         if self.keep_moving_right and self.rect.right < self.screen_rect.right:

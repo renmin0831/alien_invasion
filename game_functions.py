@@ -2,6 +2,7 @@ import pygame
 import sys
 from bullet import Bullets
 from alien import Aliens
+from time import sleep
 
 
 def check_event(screen, instance_settings, instance_ship, bullets):
@@ -61,14 +62,14 @@ def fire_bullets(screen, instance_settings, instance_ship, bullets):
         bullets.add(new_bullet)
 
 
-def update_bullets(bullets):
-    # 更新子弹移动
-    bullets.update()
-    # 对编组中的每个子弹精灵都进行一个绘制操作
-    for bullet in bullets.copy():
-        # 条件测试：删除在屏幕中消失的子弹
-        if bullet.bullet_rect.centery <= 0:  # top 还是buttom,哪个也不是，哈哈哈
-            bullets.remove(bullet)
+def check_bullet_alien_collision(instance_settings, screen, aliens, instance_ship, bullets):
+    # 规范写法，返回一个字典保存在collisions
+    # 检测两个精灵组，发生碰撞都进行删除
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+    # 条件测试 判断aliens中是否有外星人精灵，没有则重新生成
+    if len(aliens) == 0:
+        create_alien_fleet(instance_settings, screen, aliens, instance_ship)
 
 
 def create_alien_fleet(instance_settings, screen, aliens, instance_ship):
@@ -77,10 +78,13 @@ def create_alien_fleet(instance_settings, screen, aliens, instance_ship):
     # 通过实例获取一个外星人的宽和高
     alien_width = alien.rect.width
     alien_height = alien.rect.height
+
+    # 获取飞船高度
     ship_height = instance_ship.rect.height
 
-    # 调用对应方法获得后续步骤所需的整数序列
+    # 获得每行可容纳的外星人数量
     usable_number_alien_x = get_number_alien_row(instance_settings, alien_width)
+    # 获得可容纳的多少行外星人
     usable_number_alien_y = get_number_alien_column(instance_settings, alien_height, ship_height)
 
     # 遍历每一行获得y坐标
@@ -135,33 +139,101 @@ def change_alien_fleet_direction(aliens, instance_settings):
 def check_alien_fleet_edges(aliens, instance_settings):
     # 遍历外星人编组，查找是否有外星人到了边缘，
     for alien in aliens.sprites():
-        # 条件测试 返回值为True即外星人到达边缘，则下降并改变方向
+        # 条件测试 返回值为True即外星人到达边缘，则下降并改变方向；alien类中的方法
         if alien.check_edges():
             change_alien_fleet_direction(aliens, instance_settings)
-            break  # 如果没有break 如何看自己是不是进入了死循环？
+            break
+
+def check_ships_life(stats,instance_settings):
+
+    if stats.ships_life > 0:
+        stats.ships_life -= 1
+    else:
+        instance_settings.game_active = False
+
+def alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats):
+    # 重置游戏部分信息
+    # 清空外星人和子弹列表
+    aliens.empty()
+    bullets.empty()
+
+    # 重置飞船位置以及飞船可用数量
+    instance_ship.center_ship()  # 返回数据时对的，就是位置没动
+
+    # 检查飞船数量是否可以继续游戏
+    check_ships_life(stats,instance_settings)
+
+    # 创建新的外星人编组
+    create_alien_fleet(instance_settings, screen, aliens, instance_ship)
+
+    # 重新生成编组时需要强制等待x秒后显示
+    sleep(3)
 
 
-def update_aliens(aliens, instance_settings):
+def check_aliens_screen_bottom_edges(instance_ship, aliens, instance_settings, screen, bullets, stats):
+    screen_rect = instance_ship.screen_rect
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats)
+            break
+
+
+def update_bullets(instance_settings, screen, aliens, instance_ship, bullets):
+    # 该方法更新与子弹相关的内容
+    # 更新子弹移动 bullet类中自己写的方法
+    bullets.update()
+
+    # 对编组中的每个子弹精灵都进行一个绘制操作
+    for bullet in bullets.copy():
+        # 条件测试：删除在屏幕中消失的子弹;bottom
+        if bullet.rect.centery <= 0:
+            bullets.remove(bullet)
+
+    # 调用方法生成新的外星人
+    check_bullet_alien_collision(instance_settings, screen, aliens, instance_ship, bullets)
+
+
+def update_aliens(aliens, instance_settings, instance_ship, screen, bullets, stats):
+    # 更新与外星人相关的内容
+    # 如有外星人碰到屏幕边缘，向下移动并，改变移动方向
     check_alien_fleet_edges(aliens, instance_settings)
-    # 更新飞船位置;这个需要单独写个方法？至于吗？？？就不写！！！
+    # 改变移动方向；alien类中的方法
     aliens.update()
 
+    # 遍历外星人编组，返回第一个与飞船发生碰撞的外星人
+    if pygame.sprite.spritecollideany(instance_ship, aliens):
+        # 发生碰撞后重置外星人、子弹、飞船
+        alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats)
+    # 如果有外星人到达低端，重置部分信息
+    check_aliens_screen_bottom_edges(instance_ship, aliens, instance_settings, screen, bullets, stats)
 
-def update_screen(screen, instance_settings, instance_ship, bullets, aliens):
-    # 填充背景为图片
-    screen.blit(instance_settings.bg_image, (0, 0))
-    update_bullets(bullets)
+
+def draw_bullet(bullets):
     # 将子弹编组内的子弹在屏幕上进行绘制
     for bullet in bullets.sprites():
         bullet.draw_bullet()
 
-    # 将飞船绘制处理啊
+
+def update_screen(screen, instance_settings, instance_ship, bullets, aliens, stats):
+    # 填充背景为图片
+    screen.blit(instance_settings.bg_image, (0, 0))
+
+    # 更新与子弹相关的内容，
+    # 子弹移动、删除不在屏幕内的子弹、创建新的外星人群
+    update_bullets(instance_settings, screen, aliens, instance_ship, bullets)
+
+    # 将子弹编组内的子弹在屏幕上进行绘制
+    draw_bullet(bullets)
+
+    # 绘制飞船
     instance_ship.blit_ship()
-    # # 更新飞船位置;这个需要单独写个方法？至于吗？？？就不写！！！
-    # aliens.update()
-    update_aliens(aliens, instance_settings)
+
     # 绘制编组中每个外星人
     aliens.draw(screen)
+
+    # 更新与外星人相关内容
+    # 碰撞屏幕边缘改变移动方向、飞船与外星人碰撞重置部分信息
+    update_aliens(aliens, instance_settings, instance_ship, screen, bullets, stats)
 
     # 将准备好的内容都显示出来
     pygame.display.flip()

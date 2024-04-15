@@ -14,15 +14,19 @@ class Settings:
         self.ship_speed = 10
 
         # 设置子弹属性
-        self.bullet_width = 3
+        self.bullet_width = 200
         self.bullet_height = 15
         self.bullet_color = (255, 255, 60)
-        self.bullet_speed = 5
-        self.bullet_limit = 3
+        self.bullet_speed = 50
+        self.bullet_limit = 2
 
         # 设置外星人属性
-        self.alien_fleet_speed = 1
-        # 1向右移动 -1向左移动
+        self.alien_fleet_speed = 10
+        # 1向右移动 -1向左移动，没有其他数字
         self.alien_fleet_direction = 1
         # 触碰边缘后向下移动的像素
-        self.alien_fleet_drop = 1
+        self.alien_fleet_drop = 30
+
+
+        # 设置游戏开始/结束标志
+        self.game_active = True

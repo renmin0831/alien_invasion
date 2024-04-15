@@ -11,9 +11,7 @@ class Aliens(Sprite):
         self.screen_rect = self.screen.get_rect()
         self.instance_settings = instance_settings
 
-        # 需要我们自己去实现它的image属性
-
-        # 加载外星人图片资源，image属性老是搞事情
+        # 加载外星人图片资源
         self.image = pygame.image.load("images/alien.png")
         # 获取图像矩形，赋值给rect对rect属性初始化；rect是基类的属性，表示精灵对象的矩形区域
         self.rect = self.image.get_rect()
