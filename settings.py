@@ -21,12 +21,10 @@ class Settings:
         self.bullet_limit = 2
 
         # 设置外星人属性
-        self.alien_fleet_speed = 10
+        self.alien_fleet_speed = 5
         # 1向右移动 -1向左移动，没有其他数字
         self.alien_fleet_direction = 1
         # 触碰边缘后向下移动的像素
-        self.alien_fleet_drop = 30
+        self.alien_fleet_drop = 3
 
 
-        # 设置游戏开始/结束标志
-        self.game_active = True

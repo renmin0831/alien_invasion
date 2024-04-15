@@ -4,6 +4,7 @@ class GameStats:
         # 初始化统计信息
         self.instance_settings = instance_settings
         self.reset_stats()
+        self.game_active = True
 
     def reset_stats(self):
         # 存储可变的信息

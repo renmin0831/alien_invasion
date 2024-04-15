@@ -182,7 +182,6 @@
         2.使用剩余空间除以摆放一个飞船所需的高度，就得出能放多少行
 
 
-
     解决10：这段代码 怎么都理解不了，应该是外星人创建那就没明白每段代码的意思
             def create_alien(instance_setting, screen, aliens, alien_number):
             # 创建一个外星人实例，其中包含
@@ -194,15 +193,15 @@
             aliens.add(alien)
         self.rect.x = self.x  啥意思？？？
 
-18. 让外星人移动
+10. 让外星人移动
     让外星人向右移动
     检测外星人是否撞到了屏幕边缘，撞到边缘向下移动并改变方向
     break # 如果没有break 如何看自己是不是进入了死循环？
 
-19    游戏碰撞是指 游戏重叠在一起 sprite.groupcollide()
+10    游戏碰撞是指 游戏重叠在一起 sprite.groupcollide()
     为社么要在bullets_update 里判断屏幕是否还有外星人？？
 
-20 检测外星人的碰撞
+12 检测外星人的碰撞
     pygame.sprite.groupcollide 是 Pygame 中用于检测精灵组之间碰撞的方法。
     它用于检测一个精灵组中的精灵是否与另一个精灵组中的精灵发生了碰撞，并将碰撞的结果以字典的形式返回。
     pygame.sprite.groupcollide(group1, group2, dokill1, dokill2, collided=None) -> dict
@@ -217,23 +216,33 @@
         pygame.sprite.groupcollide(sprite1,sprite2,True,True)
         pygame.sprite.spritecollideany(sprite, group, collided = None)三个参数：一个精灵，一个编组，默认使用精灵对象的rect属性判断碰撞
 
-21 创建存储游戏统计信息
+13 创建存储游戏统计信息，设置游戏结束的相关信息以及运行那部分内容
     想一下 创建的存储游戏统计信息，都要存储哪些信息呢
         游戏次数
         历史最高分
         本次游戏分数
         关卡数
 
-    目标是3此机会，目前0 也能继续游戏，需要处理下0 的情况
-    调用方法在init中初始化，和直接在init中初始化的区别是啥？
-    给自己坑了 飞船在碰撞到外星人后 应该是在底部中间重置，但是没有，应该是参数传递错误
+    解决：目标是3此机会，目前0 也能继续游戏，需要处理下0 的情况
+        因为首次使用的life没有算进去，修改了次数life-1处理的
 
-    gf里那么多方法 尤其是update的 我都已经不记得具体是要干啥的了
+    解决：调用方法在init中初始化，和直接在init中初始化的区别是啥？
+        在类下边紧接着初始化的 一般防止的都是不怎么变化的，比如;历史最高分
+        在方法中初始化的会频发产生变化，比如每局游戏的游戏次数，当局的得分等
 
-22 设置游戏结束的相关信息以及运行那部分内容
+    解决：飞船在碰撞到外星人后 应该是在底部中间重置，但是没有，飞船重置的位置也不对
+
+
+
+    解决：gf里那么多方法 尤其是update的 我都已经不记得具体是要干啥的了
+        定时回顾方法和思路
+
+
+
+
+
 ---------------------------------------------------------------------------------
-23.添加play按钮
-24创建button类
+14创建button类，添加play按钮
     想一想button类应该包含什么属性
     pygame中没有内置的创建按钮的方法， 创建带标签的实心矩形
     pygame.font.SysFont()s 是什么方法
@@ -254,6 +263,34 @@
 显示光标
 
 设置速度等级并重置速度
+
+
+解决：不知道都应该都干些什么
+解决 ：如何创建一个带标签的实心矩形
+
+
+解决：文字相关的方法不知道
+    字体设置
+        timesnewroman 指定字体
+        pygame.font.SysFont() 使用默认字体和字号
+        pygame.font.Font()使用指定字体和字号
+        pygame.font.get_fonts() 获取支持的字体
+        pygame.Rect(0,0,self.width,self.height)
+        self.prep_msg(msg)
+
+        如何将文字渲染成图像
+        forn.randon()
+
+
+screen.fill(self.button_bg_color, self.rect)和 screen.blit(self.msg_image, self.msg_image_rect) 分不清楚参数应该是什么
+
+
+
+
+
+
+
+
 
 25 记分
 显示得分

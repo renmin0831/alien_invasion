@@ -7,6 +7,7 @@ from bullet import Bullets
 from pygame.sprite import Group
 from alien import Aliens
 from game_stats import GameStats
+from button import Button
 
 
 def run_game():
@@ -18,6 +19,8 @@ def run_game():
     instance_settings = Settings()
     # 创建屏幕的对象
     screen = pygame.display.set_mode((instance_settings.screen_width, instance_settings.screen_height))
+    button_play = Button(instance_settings,screen, "Play")
+
     # 创建飞船实例
     instance_ship = Ship(screen, instance_settings)
 
@@ -32,19 +35,24 @@ def run_game():
     # 创建一个游戏统计信息的实例
     stats = GameStats(instance_settings)
 
+
     while True:
         # 获取在游戏过程中的操作
         gf.check_event(screen, instance_settings, instance_ship, bullets)
 
-        if instance_settings.game_active :
+        if stats.game_active :
             # 更新飞船的连续移动
             instance_ship.update_ship()
-            # 更新子弹位置以及屏幕中子弹数量
+            # 更新与子弹相关的内容，
+            # 子弹移动、删除不在屏幕内的子弹、创建新的外星人群
             gf.update_bullets(instance_settings, screen, aliens, instance_ship, bullets)
+            # 更新与外星人相关内容
+            # 碰撞屏幕边缘改变移动方向、飞船与外星人碰撞重置部分信息
             gf.update_aliens(aliens, instance_settings, instance_ship, screen, bullets,stats)
 
-            # 更新屏幕绘制内容
-            gf.update_screen(screen, instance_settings, instance_ship, bullets, aliens,stats)
+
+        # 更新屏幕绘制内容
+        gf.update_screen(screen, instance_settings, instance_ship, bullets, aliens,stats,button_play)
 
 
 run_game()
