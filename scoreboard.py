@@ -1,7 +1,7 @@
 import pygame.font
 
 
-class ScoreBoard():
+class ScoreBoard:
     def __init__(self, screen, instance_settings, stats):
         # 初始化屏幕所需信息
         self.screen = screen
