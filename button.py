@@ -2,7 +2,7 @@ import pygame.font
 
 
 class Button:
-    def __init__(self,instance_settings, screen, msg):
+    def __init__(self, screen, msg):
         # pygame.font.init()
         # 需要在屏幕上绘制出来，所以需要获取屏幕的矩形区域
         self.screen = screen
@@ -15,7 +15,6 @@ class Button:
 
         self.text_color = (255, 255, 255)
         self.font = pygame.font.SysFont("timesnewroman", 38)
-
 
         # 创建按钮的rect对象并剧中显示
         self.rect = pygame.Rect(0, 0, self.button_width, self.button_height)
@@ -33,7 +32,7 @@ class Button:
         self.msg_image_rect.center = self.rect.center
 
     def button_blit(self):
-        #填充按钮区域的颜色
+        # 填充按钮区域的颜色
         self.screen.fill(self.button_bg_color, self.rect)
-        #将渲染的文字在屏幕中绘制出来
+        # 将渲染的文字在屏幕中绘制出来
         self.screen.blit(self.msg_image, self.msg_image_rect)

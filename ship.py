@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Ship(Sprite):
     def __init__(self, screen, instance_settings):
         super().__init__()
@@ -23,7 +24,7 @@ class Ship(Sprite):
         self.image_centerX = float(self.rect.centerx)
         self.image_centerY = float(self.rect.centery)
 
-        # 连续移动标志,初始为false，根据检测的事件类型改变状态
+        # 左右上下四方向连续移动标志,初始为false，根据检测的事件类型改变状态
         self.keep_moving_right = False
         self.keep_moving_left = False
         self.keep_moving_up = False
@@ -51,9 +52,10 @@ class Ship(Sprite):
             self.image_centerY += self.instance_settings.ship_speed
 
         # 根据self.center更新rect对象
-        # 将暂时保存的x轴的值再重新赋给飞船的外接x，此处会有小数点取整的情况，对飞船显示来说问题不大
+        # 将暂时保存的x轴的值再重新赋给飞船的外接x，此处会有小数点取整的情况
         self.rect.centerx = self.image_centerX
         self.rect.centery = self.image_centerY
 
     def blit_ship(self):
+        # 在屏幕中绘制出飞船
         self.screen.blit(self.image, self.rect)

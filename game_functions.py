@@ -3,7 +3,7 @@ import sys
 from bullet import Bullets
 from alien import Aliens
 from time import sleep
-from scoreboard import ScoreBoard
+
 
 
 def check_event(screen, instance_settings, instance_ship, bullets, button_play, stats, aliens, score):
@@ -21,6 +21,7 @@ def check_event(screen, instance_settings, instance_ship, bullets, button_play, 
         # 条件测试 事件类型为鼠标点play按钮，返回play击坐标
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
+            # 调用函数检查是否可以重新开始游戏，并重置部分游戏信息
             check_play_button_down(button_play, mouse_x, mouse_y, stats, aliens, bullets, instance_settings, screen,
                                    instance_ship, score)
 
@@ -31,6 +32,7 @@ def check_play_button_down(button_play, mouse_x, mouse_y, stats, aliens, bullets
     click_button = button_play.rect.collidepoint(mouse_x, mouse_y)
     # 条件测试 点击play按钮 并且 活动为false
     if click_button and not stats.game_active:
+        # 调用函数，重置部分游戏信息
         start_game(stats, bullets, aliens, instance_settings, screen, instance_ship, score)
 
 
@@ -40,7 +42,7 @@ def start_game(stats, bullets, aliens, instance_settings, screen, instance_ship,
     # 重置活动状态
     stats.game_active = True
 
-    #重置分数
+    # 重新绘制 分数、历史高分、游戏等级、代表游戏次数的飞船
     score.prep_score()
     score.prep_high_score()
     score.prep_game_level()
@@ -76,7 +78,7 @@ def check_event_keydown(event, screen, instance_settings, instance_ship, bullets
     # 条件测试 事件类型为F1时退出游戏
     elif event.key == pygame.K_F1:
         sys.exit()
-    # 条件测试 事件类型为TAB键时视为点击play按钮
+    # 条件测试 事件类型为TAB键时视为点击play按钮，重置部分属性并开始游戏
     elif event.key == pygame.K_TAB:
         start_game(stats, bullets, aliens, instance_settings, screen, instance_ship, score)
 
@@ -114,7 +116,7 @@ def check_bullet_alien_collision(instance_settings, screen, aliens, instance_shi
         for aliens in collisions.values():
             # 计算得分
             stats.score += instance_settings.alien_point * len(aliens)
-            print(f"当前分数：{stats.score }")
+            print(f"当前分数：{stats.score}")
             # 在屏幕上重新绘制分数
             score.prep_score()
         # 检查历史最高分是否需要重新赋值
@@ -139,9 +141,8 @@ def check_high_score(stats, score):
     # 条件测试 当局分数高于最高分时最高分被重新赋值并在屏幕上绘出
     if stats.score > stats.high_score:
         stats.high_score = stats.score
-        print(f"当前分{stats.score}")
-        print(f"历史分{stats.high_score}")
         score.prep_high_score()
+
 
 def create_alien_fleet(instance_settings, screen, aliens, instance_ship):
     # 实例化外星人
@@ -216,21 +217,22 @@ def check_alien_fleet_edges(aliens, instance_settings):
             break
 
 
-def check_ships_life(stats,score):
+def check_ships_life(stats, score):
+    # 条件测试 当代表游戏次数的飞船数量大于0时，次数-1并重新绘制代表可游戏次数的飞船
     if stats.ships_life > 0:
         stats.ships_life -= 1
-        # sleep(0.5)
         score.prep_ships_life()
     else:
+        # 否则 游戏状态修改为False
         stats.game_active = False
         # 显示光标
         pygame.mouse.set_visible(True)
 
 
-def alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats,score):
+def alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats, score):
     # 重置游戏部分信息
     # 检查飞船数量是否可以继续游戏
-    check_ships_life(stats,score)
+    check_ships_life(stats, score)
     # 清空外星人和子弹列表
     aliens.empty()
     bullets.empty()
@@ -249,15 +251,15 @@ def alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bul
     sleep(3)
 
 
-def check_aliens_screen_bottom_edges(instance_ship, aliens, instance_settings, screen, bullets, stats,score):
+def check_aliens_screen_bottom_edges(instance_ship, aliens, instance_settings, screen, bullets, stats, score):
+    # 检查外星人是否触碰到屏幕底部
     screen_rect = instance_ship.screen_rect
+    # 遍历外星人组确定是否有外星人触碰到屏幕底部
     for alien in aliens.sprites():
+        # 条件测试 外星人底部碰到了屏幕底部，重置部分属性，重新开始游戏
         if alien.rect.bottom >= screen_rect.bottom:
-            alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats,score)
+            alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats, score)
             break
-
-
-
 
 
 def update_bullets(instance_settings, screen, aliens, instance_ship, bullets, stats, score):
@@ -275,7 +277,7 @@ def update_bullets(instance_settings, screen, aliens, instance_ship, bullets, st
     check_bullet_alien_collision(instance_settings, screen, aliens, instance_ship, bullets, stats, score)
 
 
-def update_aliens(aliens, instance_settings, instance_ship, screen, bullets, stats,score):
+def update_aliens(aliens, instance_settings, instance_ship, screen, bullets, stats, score):
     # 更新与外星人相关的内容
     # 如有外星人碰到屏幕边缘，向下移动并，改变移动方向
     check_alien_fleet_edges(aliens, instance_settings)
@@ -285,9 +287,9 @@ def update_aliens(aliens, instance_settings, instance_ship, screen, bullets, sta
     # 遍历外星人编组，返回第一个与飞船发生碰撞的外星人
     if pygame.sprite.spritecollideany(instance_ship, aliens):
         # 发生碰撞后重置外星人、子弹、飞船
-        alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats,score)
+        alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats, score)
     # 如果有外星人到达低端，重置部分信息
-    check_aliens_screen_bottom_edges(instance_ship, aliens, instance_settings, screen, bullets, stats,score)
+    check_aliens_screen_bottom_edges(instance_ship, aliens, instance_settings, screen, bullets, stats, score)
 
 
 def draw_bullet(bullets):
@@ -309,9 +311,9 @@ def update_screen(screen, instance_settings, instance_ship, bullets, aliens, sta
     # 绘制分数
     score.score_blit()
 
+    # 测试条件 游戏状态为False，重绘开始按钮
     if not stats.game_active:
         button_play.button_blit()
-
 
     # 将准备好的内容都显示出来
     pygame.display.flip()

@@ -1,7 +1,3 @@
-"""
-只用做绘制屏幕上需要的 当局分数、当局游戏等级、历史最高分、可使用飞船数量、
-"""
-
 import pygame.font
 from ship import Ship
 
@@ -18,7 +14,7 @@ class ScoreBoard:
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont("timesnewroman", 35)
 
-        # 把文字渲染成图像
+        # 把文字渲染成图像；分数、历史高分、等级、代表游戏次数的飞船
         self.prep_score()
         self.prep_high_score()
         self.prep_game_level()
@@ -49,7 +45,7 @@ class ScoreBoard:
         self.high_score_rect.top = self.instance_settings_rect.top + 20
 
     def prep_game_level(self):
-        # 渲染等级
+        # 渲染等级，在指定位置显示
         str_level = str(self.stats.level)
         self.level_image = self.font.render(str_level, True, (255, 255, 255))
         self.level_rect = self.level_image.get_rect()
@@ -60,8 +56,7 @@ class ScoreBoard:
         # 显示剩余可使用飞船个数
         # 创建一个可使用飞船组
         self.ship_lifetimes = pygame.sprite.Group()
-        # 遍历？？？列表
-        for ship_number in range(self.stats.ships_life):  # 这块可能有问题 rang()
+        for ship_number in range(self.stats.ships_life):
             # 创建一个ship实例
             ship = Ship(self.screen, self.instance_settings)
             # 将实例飞船放置到指定位置
@@ -71,7 +66,7 @@ class ScoreBoard:
             self.ship_lifetimes.add(ship)
 
     def score_blit(self):
-        # 将渲染的文字显示出来
+        # 将渲染的文字显示出来；分数、历史高分、等级、飞船代表的可用次数
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)

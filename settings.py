@@ -1,4 +1,3 @@
-
 import pygame
 
 
@@ -40,6 +39,7 @@ class Settings:
         self.alien_fleet_direction = 1
 
     def increase_speed(self):
+        # 部分移动速度提升；飞船移动速度、子弹移动速度、外星人移动速度
         self.ship_speed *= self.speed_up_scale
         self.bullet_speed *= self.speed_up_scale
         self.alien_fleet_speed *= self.speed_up_scale
