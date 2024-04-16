@@ -35,14 +35,17 @@ def check_play_button_down(button_play, mouse_x, mouse_y, stats, aliens, bullets
 
 
 def start_game(stats, bullets, aliens, instance_settings, screen, instance_ship, score):
-    # 重置活动状态
-    stats.game_active = True
     # 重置游戏信息
     stats.reset_stats()
+    # 重置活动状态
+    stats.game_active = True
+
+    #重置分数
     score.prep_score()
     score.prep_high_score()
-    score.prep_level()
-    score.prep_ship_life()
+    score.prep_game_level()
+    score.prep_ships_life()
+
     # 清空子弹和飞船编组
     bullets.empty()
     aliens.empty()
@@ -110,7 +113,8 @@ def check_bullet_alien_collision(instance_settings, screen, aliens, instance_shi
         # 遍历字典，取出被子弹消灭的外星人数量
         for aliens in collisions.values():
             # 计算得分
-            score.stats_score += instance_settings.alien_point * len(aliens)
+            stats.score += instance_settings.alien_point * len(aliens)
+            print(f"当前分数：{stats.score }")
             # 在屏幕上重新绘制分数
             score.prep_score()
         # 检查历史最高分是否需要重新赋值
@@ -121,8 +125,8 @@ def check_bullet_alien_collision(instance_settings, screen, aliens, instance_shi
         # 清空屏幕上显示的子弹
         bullets.empty()
         # 增加level等级并在屏幕上重新绘制
-        score.level += 1
-        score.prep_level()
+        stats.level += 1
+        score.prep_game_level()
         # 创建外星人群
         create_alien_fleet(instance_settings, screen, aliens, instance_ship)
         # level增加后难度增加，增加外星人移动速度
@@ -133,8 +137,10 @@ def check_bullet_alien_collision(instance_settings, screen, aliens, instance_shi
 
 def check_high_score(stats, score):
     # 条件测试 当局分数高于最高分时最高分被重新赋值并在屏幕上绘出
-    if score.stats_score > score.high_score:
-        score.high_score = score.stats_score
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        print(f"当前分{stats.score}")
+        print(f"历史分{stats.high_score}")
         score.prep_high_score()
 
 def create_alien_fleet(instance_settings, screen, aliens, instance_ship):
@@ -213,8 +219,8 @@ def check_alien_fleet_edges(aliens, instance_settings):
 def check_ships_life(stats,score):
     if stats.ships_life > 0:
         stats.ships_life -= 1
-        sleep(0.5)
-        score.prep_ship_life()
+        # sleep(0.5)
+        score.prep_ships_life()
     else:
         stats.game_active = False
         # 显示光标
@@ -223,17 +229,18 @@ def check_ships_life(stats,score):
 
 def alien_ship_stats_reset(instance_settings, screen, aliens, instance_ship, bullets, stats,score):
     # 重置游戏部分信息
+    # 检查飞船数量是否可以继续游戏
+    check_ships_life(stats,score)
     # 清空外星人和子弹列表
     aliens.empty()
     bullets.empty()
-    # 检查飞船数量是否可以继续游戏
-    check_ships_life(stats,score)
+
     # 重置飞船位置以及飞船可用数量
     instance_ship.center_ship()  # 返回数据时对的，就是位置没动
 
     # 创建新的外星人编组
     create_alien_fleet(instance_settings, screen, aliens, instance_ship)
-    score.prep_ship_life()
+    score.prep_ships_life()
     # 重置游戏速度相关信息
     instance_settings.initialize_dynamic_settings()
     # # 重置当前游戏分数
@@ -299,11 +306,12 @@ def update_screen(screen, instance_settings, instance_ship, bullets, aliens, sta
     # 绘制编组中每个外星人
     aliens.draw(screen)
 
+    # 绘制分数
+    score.score_blit()
+
     if not stats.game_active:
         button_play.button_blit()
 
-    # 绘制分数
-    score.score_blit()
 
     # 将准备好的内容都显示出来
     pygame.display.flip()

@@ -29,13 +29,13 @@ class Settings:
 
     def initialize_dynamic_settings(self):
         # 消灭外星人得分
-        self.alien_point = 1
+        self.alien_point = 10
         # 飞船速度
         self.ship_speed = 10
         # 子弹速度
         self.bullet_speed = 30
         # 外星人整体下移指定像素
-        self.alien_fleet_speed = 7
+        self.alien_fleet_speed = 10
         # 初始右移动；1向右移动 -1向左移动，值只能是正负1
         self.alien_fleet_direction = 1
 

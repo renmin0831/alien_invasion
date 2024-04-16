@@ -5,8 +5,7 @@ class GameStats:
         self.instance_settings = instance_settings
         self.reset_stats()
         self.game_active = False
-
-
+        self.high_score = 0
 
     def reset_stats(self):
         # 存储可变的信息

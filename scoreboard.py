@@ -1,3 +1,7 @@
+"""
+只用做绘制屏幕上需要的 当局分数、当局游戏等级、历史最高分、可使用飞船数量、
+"""
+
 import pygame.font
 from ship import Ship
 
@@ -8,12 +12,7 @@ class ScoreBoard:
         self.screen = screen
         self.instance_settings = instance_settings
         self.instance_settings_rect = self.screen.get_rect()
-        self.high_score = 0
         self.stats = stats
-
-        self.stats_score = self.stats.score
-        self.level = self.stats.level
-        # self.ship_life = stats.ships_life
 
         # 设置字体的颜色、字体、字体大小
         self.text_color = (30, 30, 30)
@@ -22,12 +21,12 @@ class ScoreBoard:
         # 把文字渲染成图像
         self.prep_score()
         self.prep_high_score()
-        self.prep_level()
-        self.prep_ship_life()
+        self.prep_game_level()
+        self.prep_ships_life()
 
     def prep_score(self):
         # 将分数转化为字符串并格式化
-        rounded_score = int(round(self.stats_score, -1))
+        rounded_score = int(round(self.stats.score, -1))
         str_score = " {:,}".format(rounded_score)
         # 指定字体、字体颜色和背景颜色,将文字渲染成图像
         self.score_image = self.font.render(str_score, True, (255, 255, 255))
@@ -39,7 +38,7 @@ class ScoreBoard:
 
     def prep_high_score(self):
         # 将分数转化为字符串并格式化
-        rounded_high_score = int(round(self.high_score))
+        rounded_high_score = int(round(self.stats.high_score, -1))
         str_high_score = "{:,}".format(rounded_high_score)
         # 指定字体、字体颜色和背景颜色,将文字渲染成图像
         self.high_score_image = self.font.render(str_high_score, True, (255, 255, 255))
@@ -49,15 +48,15 @@ class ScoreBoard:
         self.high_score_rect.centerx = self.instance_settings_rect.centerx
         self.high_score_rect.top = self.instance_settings_rect.top + 20
 
-    def prep_level(self):
+    def prep_game_level(self):
         # 渲染等级
-        str_level = str(self.level)
+        str_level = str(self.stats.level)
         self.level_image = self.font.render(str_level, True, (255, 255, 255))
         self.level_rect = self.level_image.get_rect()
-        self.level_rect.right = self.instance_settings_rect.right - 20
-        self.level_rect.top = self.instance_settings_rect.top + 100
+        self.level_rect.right = self.score_rect.right
+        self.level_rect.top = self.score_rect.bottom + 10
 
-    def prep_ship_life(self):
+    def prep_ships_life(self):
         # 显示剩余可使用飞船个数
         # 创建一个可使用飞船组
         self.ship_lifetimes = pygame.sprite.Group()
@@ -66,9 +65,9 @@ class ScoreBoard:
             # 创建一个ship实例
             ship = Ship(self.screen, self.instance_settings)
             # 将实例飞船放置到指定位置
-            ship.rect.x = ship_number * ship.rect.width + 10 # 位置可能有问题
+            ship.rect.x = 10 + ship_number * ship.rect.width  # 位置可能有问题
             ship.rect.y = 10
-             # 将实例飞船添加到可使用飞船组
+            # 将实例飞船添加到可使用飞船组
             self.ship_lifetimes.add(ship)
 
     def score_blit(self):
