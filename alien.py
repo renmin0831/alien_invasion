@@ -16,7 +16,7 @@ class Aliens(Sprite):
         # 获取图像矩形，赋值给rect对rect属性初始化；rect是基类的属性，表示精灵对象的矩形区域
         self.rect = self.image.get_rect()
         # 将首个外星人设置在屏幕左上角,默认位置(0,0)
-        # 将外星人的中心点设置成自身的宽和高，中心点在右下角；这样做为了方便后续碰撞检测用的吗/(ㄒoㄒ)/~~
+        # 将外星人的中心点设置成自身的宽和高，中心点在右下角
         self.rect.x = self.rect.width
         self.rect.y = self.rect.height
 

@@ -7,9 +7,12 @@ class GameStats:
         self.game_active = False
 
 
+
     def reset_stats(self):
         # 存储可变的信息
         # 初始化可变信息
-        self.ships_life = self.instance_settings.bullet_limit
+        self.ships_life = self.instance_settings.ship_limit
         # 游戏初始得分
         self.score = 0
+        # 游戏初始等级
+        self.level = 1

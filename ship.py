@@ -1,9 +1,9 @@
 import pygame
+from pygame.sprite import Sprite
 
-
-class Ship:
-
+class Ship(Sprite):
     def __init__(self, screen, instance_settings):
+        super().__init__()
         # 初始化屏幕并获取屏幕的外接矩形
         self.screen = screen
         # 对象赋给一个变量这块有点奇葩，可能会报错

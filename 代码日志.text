@@ -309,7 +309,7 @@ screen.fill(self.button_bg_color, self.rect)和 screen.blit(self.msg_image, self
 外星人被消灭时更新得分
     将消灭的每个外星人的点数都计入得分
     处理 在一次循环中如果有两颗子弹射中了外星人，或因子弹宽而色号中更多外星人，的得分 像不像测试里的bug
-    collisions 我什么时候把它设置成了字典了？好像没有哎
+    collisions 我什么时候把它设置成了字典了？好像没有哎-- key子弹 value是外星人列表
 将分数处理成千分位
   score_str = "{:,}".format(rounded_score) 字符串格式设置指令，将数值转换为字符串时在其中放入逗号
 
@@ -319,13 +319,25 @@ screen.fill(self.button_bg_color, self.rect)和 screen.blit(self.msg_image, self
 显示等级
 
 
+解决： 如何将分数不用渲染成图像的模式下移动到指定位置
+    使用pygame.font.Font类创建字体对象，并使用render()方法将文字渲染到Surface上。
+    然后，你可以使用Surface对象的相关方法将文字绘制到屏幕上，并通过更新文字的位置来实现移动。
+    self.score_image = self.font.render(str_score, True,(255,255,255))
+    如果是渲染成图像的话，还需要给出文字颜色和背景填充色
+    self.score_image = self.font.render(str_score, True, self.text_color, self.instance_settings.bg_color)
+
+解决：如何使用编组 创建生命次数、外星人、子弹
+
+解决：历史最高分和当前分数更新速度不一样，是因为属性传递步骤不同导致的吗
+
+
+
 拓展：
     1.修改背景图为动态的
     2.修改外星人为动态的
     3.子弹和外星人发生碰撞后要有碰撞效果
     4.飞船尾部要有喷气的动态效果
     5.刷新外星人时，需要从上往下，显示当前关卡数，完成刷新前不允许开火
-
 
 
 

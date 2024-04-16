@@ -40,19 +40,17 @@ def run_game():
 
     while True:
         # 获取在游戏过程中的操作
-        gf.check_event(screen, instance_settings, instance_ship, bullets,button_play,stats,aliens)
+        gf.check_event(screen, instance_settings, instance_ship, bullets, button_play, stats, aliens,score)
 
         if stats.game_active :
             # 更新飞船的连续移动
             instance_ship.update_ship()
-            # 更新与子弹相关的内容，
-            # 子弹移动、删除不在屏幕内的子弹、创建新的外星人群
-            gf.update_bullets(instance_settings, screen, aliens, instance_ship, bullets)
-            # 更新与外星人相关内容
-            # 碰撞屏幕边缘改变移动方向、飞船与外星人碰撞重置部分信息
-            gf.update_aliens(aliens, instance_settings, instance_ship, screen, bullets,stats)
-
-
+            # 更新与子弹相关的内容，子弹移动、删除不在屏幕内的子弹、创建新的外星人群
+            gf.update_bullets(instance_settings, screen, aliens, instance_ship, bullets,stats,score)
+            # 更新与外星人相关内容，碰撞屏幕边缘改变移动方向、游戏次数、飞船与外星人碰撞重置部分信息
+            gf.update_aliens(aliens, instance_settings, instance_ship, screen, bullets, stats,score)
+            # 更新历史最高分
+            gf.check_high_score(stats,score)
         # 更新屏幕绘制内容
         gf.update_screen(screen, instance_settings, instance_ship, bullets, aliens,stats,button_play,score)
 
